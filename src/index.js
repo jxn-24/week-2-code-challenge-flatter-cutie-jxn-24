@@ -21,9 +21,7 @@ function displayCharacterDetails(character) {
 
   const detailedInfo = document.getElementById("detailed-info");
   detailedInfo.innerHTML = 
-  <img src="${character.image}" alt="${character.name}"/>
-  <h2>${character.name}</h2>
-  <p>Votes: <span id="vote-count">${character.votes}</span></p>
+  <><img src="${character.image}" alt="${character.name}" /><h2>${character.name}</h2><p>Votes: <span id="vote-count">${character.votes}</span></p></>
 ;
 
 const votesForm = document.getElementById("votes-form");
@@ -68,9 +66,26 @@ characterForm.addEventListener('submit', (event) => {
   displayCharacterDetails(newCharacter);
   character.reset();
   
-
-
 });
+}
+
+votesForm.addEventListener('submit', (event) => {
+  event.preventDefault();
+  const votesInput = document.getElementById('votes');
+  const voteCount = document.getElementById('vote-count');
+  const newVotes = parseInt(voteCount.textContent) + parseInt(votesInput.value);
+  voteCount.textContent = newVotes;
+
+  fetch(`http://localhost:3000/characters/${currentCharacter.id}`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ votes: parseInt(voteCount.textContent) })
+  })
+  .catch(error => console.error("Error updating votes:", error));});
+
+
+
+
 
 
 
